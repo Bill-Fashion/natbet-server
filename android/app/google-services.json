@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "428744493269",
+    "project_id": "natbet-a9c4d",
+    "storage_bucket": "natbet-a9c4d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428744493269:android:e66120ebef004e189a7a5c",
+        "android_client_info": {
+          "package_name": "com.example.natbet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428744493269-0b9vabrevcpkqgjad4hf54650s7riqpm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.natbet",
+            "certificate_hash": "751e207d364b37b83fa9a21ed883ca22854e5152"
+          }
+        },
+        {
+          "client_id": "428744493269-l3ig2lei4oj997jo5pl3j2ct5ais1r41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA753h6klbnqQKbnjAwqC3xtuVfNDOHjnk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428744493269-l3ig2lei4oj997jo5pl3j2ct5ais1r41.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
