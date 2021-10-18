@@ -60,7 +60,6 @@ class _CreateGameState extends State<CreateGame> {
                         .toList(),
                     onChanged: (value) => setState(() {
                           finalType = value;
-                          print(finalType);
                         })),
                 TextFormField(
                   controller: _nameTextEditingController1,
@@ -121,17 +120,11 @@ class _CreateGameState extends State<CreateGame> {
         TextButton(
           child: Text('Okay'),
           onPressed: () {
-            // print(_formKey1.currentState);
-
             if (_formKey1.currentState!.validate() &&
                 widget.selectedUpdate == false) {
-              // print(
-              //     "${widget.roomDocId}, $finalType, $description, $leftValue, $rightValue, $condition");
               _roomService.createGame("${widget.roomDocId}", "$finalType",
                   "$description", "$leftValue", "$rightValue", "$condition");
               Navigator.pop(context);
-              // _userService.addUserToRoom(roomDocId);
-
             }
           },
         ),

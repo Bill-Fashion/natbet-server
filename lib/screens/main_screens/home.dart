@@ -8,6 +8,7 @@ import 'package:natbet/services/auth.dart';
 import 'package:natbet/services/room.dart';
 import 'package:natbet/services/user.dart';
 import 'package:natbet/widgets/alert_dialog.dart';
+import 'package:natbet/widgets/build_drawer.dart';
 import 'package:natbet/widgets/create_room.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -24,10 +25,8 @@ class _HomeState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double defaultSize = MediaQuery.of(context).size.height;
-
     RoomService _roomService = RoomService();
-    // print(defaultSize / 0.15);
+
     return MultiProvider(
       providers: [
         StreamProvider(
@@ -42,7 +41,7 @@ class _HomeState extends State<HomeScreen> {
             if (!snapshot.hasData) {
               return CircularProgressIndicator();
             }
-            // print(snapshot.data);
+
             UserModel user = UserModel(
                 id: snapshot.data['uid'],
                 name: snapshot.data['name'],
@@ -50,8 +49,9 @@ class _HomeState extends State<HomeScreen> {
                 avatarURL: snapshot.data['avatar'],
                 coins: snapshot.data['coins']);
             var formatter = NumberFormat('###,###,###,###');
-            print(user.coins);
+
             return Scaffold(
+              endDrawer: BuildDrawer(),
               floatingActionButton: SpeedDial(
                 spacing: 5,
                 spaceBetweenChildren: 10,
@@ -81,6 +81,7 @@ class _HomeState extends State<HomeScreen> {
               ),
               backgroundColor: Color.fromRGBO(26, 29, 33, 1),
               appBar: AppBar(
+                actions: [drawerIconBuilder()],
                 elevation: 0,
                 backgroundColor: Colors.red.withOpacity(0.55),
               ),
@@ -262,7 +263,7 @@ class _HomeState extends State<HomeScreen> {
                               Map<String, dynamic> data =
                                   document.data()! as Map<String, dynamic>;
                               var roomDocId = document.id;
-                              String password = '';
+
                               List<String> members =
                                   List<String>.from(data['members']);
                               return StreamBuilder<dynamic>(
@@ -394,6 +395,15 @@ class _HomeState extends State<HomeScreen> {
     );
   }
 
+  drawerIconBuilder() {
+    return Builder(
+      builder: (context) => IconButton(
+        icon: Icon(CupertinoIcons.chart_bar_square),
+        onPressed: () => Scaffold.of(context).openEndDrawer(),
+      ),
+    );
+  }
+
   _showDialog(BuildContext context) {
     VoidCallback continueCallBack = () async => {
           _authService.signOut(),
@@ -455,10 +465,10 @@ class _HomeState extends State<HomeScreen> {
                 onPressed: () {
                   if (_formKey2.currentState!.validate()) {
                     // Do something like updating SharedPreferences or User Settings etc.
-                    // RoomService().createRoom(roomName!, roomPassword);
+
                     Navigator.pop(context);
                     _userService.addUserToRoom(roomDocId);
-                    // Navigator.pushNamed(context, '/room');
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(

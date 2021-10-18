@@ -34,14 +34,12 @@ class AuthService {
       _userFromFireBaseUser(user.user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
         _toast.showToast('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
         _toast.showToast('The account already exists for that email.');
       }
     } catch (e) {
-      print(e);
+      _toast.showToast('$e');
     }
   }
 
@@ -53,10 +51,8 @@ class AuthService {
       _userFromFireBaseUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
         _toast.showToast('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
         _toast.showToast('Wrong password provided for that user.');
       }
     }
@@ -66,7 +62,7 @@ class AuthService {
     try {
       return await auth.signOut();
     } catch (e) {
-      print(e.toString());
+      _toast.showToast(e.toString());
       return null;
     }
   }

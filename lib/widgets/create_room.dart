@@ -75,8 +75,7 @@ class CreateRoomDialog {
                     if (_formKey1.currentState!.validate()) {
                       // Do something like updating SharedPreferences or User Settings etc.
                       RoomService().createRoom(roomName!, roomPassword);
-                      // print(roomName);
-                      // print(roomPassword);
+
                       Navigator.of(context).pop();
                     }
                   },

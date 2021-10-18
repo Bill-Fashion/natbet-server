@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:natbet/models/user.dart';
-
 import 'package:natbet/services/auth.dart';
 import 'package:natbet/wrapper.dart';
 import 'package:provider/provider.dart';

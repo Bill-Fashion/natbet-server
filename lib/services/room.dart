@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:natbet/models/room.dart';
 import 'package:natbet/services/toast.dart';
-import 'package:natbet/widgets/create_game.dart';
 
 class RoomService {
   CollectionReference rooms = FirebaseFirestore.instance.collection('rooms');
@@ -21,7 +19,6 @@ class RoomService {
           .add({
             'creator': FirebaseAuth.instance.currentUser!.uid,
             'roomName': roomName,
-            // 'password': '',
             'rid': DateTime.now().millisecondsSinceEpoch % 1000000,
             'members': [FirebaseAuth.instance.currentUser!.uid]
           })
@@ -41,19 +38,6 @@ class RoomService {
           .catchError(
               (error) => Toast().showToast("Failed to add user: $error"));
     }
-  }
-
-  List<RoomModel> _roomListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
-      Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-      print("data trong roomList day ${data['password']}");
-      return RoomModel(
-          creator: data['creator'],
-          rname: data['roomName'],
-          rpassword: data['password'],
-          rid: data['rid'],
-          members: data['members']);
-    }).toList();
   }
 
   Stream<QuerySnapshot> getRooms() {
@@ -107,36 +91,25 @@ class RoomService {
         .collection("games")
         .doc(gameDocId);
     return game
-        .update({'winner': winner, 'closed': true})
+        .update({'winner': winner})
         .then((value) => Toast().showToast("Update success"))
         .catchError((error) => Toast().showToast("Failed to add user: $error"));
   }
 
-  Future<void> updateCurrentUserLeftBetCoin(
+  Future<void> updateCurrentUserBetCoin(
     String roomDocId,
     String gameDocId,
   ) {
-    DocumentReference game = FirebaseFirestore.instance
+    DocumentReference player = FirebaseFirestore.instance
         .collection('rooms')
         .doc(roomDocId)
         .collection("games")
-        .doc(gameDocId);
-    return game.update({
-      'leftPlayers.${FirebaseAuth.instance.currentUser!.uid}': 0
-    }).catchError((error) => Toast().showToast("Failed to add user: $error"));
-  }
-
-  Future<void> updateCurrentUserRightBetCoin(
-    String roomDocId,
-    String gameDocId,
-  ) {
-    DocumentReference game = FirebaseFirestore.instance
-        .collection('rooms')
-        .doc(roomDocId)
-        .collection("games")
-        .doc(gameDocId);
-    return game.update({
-      'rightPlayers.${FirebaseAuth.instance.currentUser!.uid}': 0
+        .doc(gameDocId)
+        .collection('players')
+        .doc(FirebaseAuth.instance.currentUser!.uid);
+    return player.update({
+      'leftBetBudget': 0,
+      'rightBetBudget': 0,
     }).catchError((error) => Toast().showToast("Failed to add user: $error"));
   }
 
@@ -148,49 +121,58 @@ class RoomService {
         .snapshots();
   }
 
-  Future<void> leftBetting(String roomDocId, String gameDocId,
-      int currentUserBetValue, var leftBudget) async {
-    print(currentUserBetValue.runtimeType);
-    await FirebaseFirestore.instance
-        .collection('rooms')
-        .doc(roomDocId)
-        .collection("games")
-        .doc(gameDocId)
-        .update({'leftBudget': leftBudget});
-
-    await FirebaseFirestore.instance
-        .collection('rooms')
-        .doc(roomDocId)
-        .collection("games")
-        .doc(gameDocId)
-        .update({
-      'leftPlayers.${FirebaseAuth.instance.currentUser!.uid}':
-          currentUserBetValue
-    });
-  }
-
-  Future<void> rightBetting(String roomDocId, String gameDocId,
-      int currentUserBetValue, var rightBudget) async {
-    print(currentUserBetValue.runtimeType);
-    await FirebaseFirestore.instance
-        .collection('rooms')
-        .doc(roomDocId)
-        .collection("games")
-        .doc(gameDocId)
-        .update({'rightBudget': rightBudget});
-
+  Future<void> playerBetting(
+    String roomDocId,
+    String gameDocId,
+    var leftBudget,
+    var rightBudget,
+    int currentLeftUserBetValue,
+    int currentRightUserBetValue,
+  ) async {
     await FirebaseFirestore.instance
         .collection('rooms')
         .doc(roomDocId)
         .collection("games")
         .doc(gameDocId)
         .update({
-      'rightPlayers.${FirebaseAuth.instance.currentUser!.uid}':
-          currentUserBetValue
+      'leftBudget': leftBudget,
+      'rightBudget': rightBudget,
+    });
+
+    await FirebaseFirestore.instance
+        .collection('rooms')
+        .doc(roomDocId)
+        .collection("games")
+        .doc(gameDocId)
+        .collection('players')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set({
+      'leftBetBudget': currentLeftUserBetValue,
+      'rightBetBudget': currentRightUserBetValue
     });
   }
 
-  // CollectionReference users = FirebaseFirestore.instance.collection('users');
+  Stream getCurrentUserBetting(roomDocId, gameDocId) {
+    return FirebaseFirestore.instance
+        .collection('rooms')
+        .doc(roomDocId)
+        .collection('games')
+        .doc(gameDocId)
+        .collection('players')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
+  }
+
+  Future<void> closeGame(var roomDocId, var gameDocId) {
+    return rooms
+        .doc(roomDocId)
+        .collection('games')
+        .doc(gameDocId)
+        .update({'closed': true})
+        .then((value) => Toast().showToast("Close success"))
+        .catchError(
+            (error) => Toast().showToast("Failed to close game: $error"));
+  }
 
   Future<void> deleteGame(var roomDocId, var gameDocId) {
     return rooms

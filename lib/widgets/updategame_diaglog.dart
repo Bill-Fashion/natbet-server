@@ -47,8 +47,6 @@ class _UpdateDialogState extends State<UpdateDialog> {
         TextButton(
           child: Text('Okay'),
           onPressed: () {
-            // print(_formKey1.currentState);
-
             if (finalResult != null) {
               _roomService.updateGame(
                 "${widget.roomDocId}",
@@ -56,8 +54,6 @@ class _UpdateDialogState extends State<UpdateDialog> {
                 "$finalResult",
               );
               Navigator.pop(context);
-              // _userService.addUserToRoom(roomDocId);
-
             }
           },
         ),

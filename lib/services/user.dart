@@ -1,18 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:natbet/models/user.dart';
-
 class UserService {
-  UserModel _userModelFromFirebaseSnapshot(DocumentSnapshot snapshot) {
-    return UserModel(
-        id: snapshot.id,
-        avatarURL: snapshot['avatar'],
-        name: snapshot['name'],
-        email: snapshot['email'],
-        description: snapshot['description']);
-  }
-
   Stream getUserInfo(String? uid) {
     return FirebaseFirestore.instance.collection('users').doc(uid).snapshots();
   }
@@ -38,5 +27,12 @@ class UserService {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({'coins': value});
+  }
+
+  Stream<QuerySnapshot> userCharts() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .orderBy('coins', descending: true)
+        .snapshots();
   }
 }

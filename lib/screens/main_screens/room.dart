@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:natbet/services/room.dart';
 import 'package:natbet/screens/main_screens/card_builder.dart';
 import 'package:natbet/widgets/create_game.dart';
-import 'package:provider/provider.dart';
 
 class RoomScreen extends StatefulWidget {
   final String? roomDocId;
