@@ -43,7 +43,13 @@ class _BuildDrawerState extends State<BuildDrawer> {
                               ConnectionState.waiting) {
                             return Text("Loading");
                           }
-
+                          var number = snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data()! as Map<String, dynamic>;
+                            return data.values;
+                          }).toList();
+                          print(number[0]);
                           return ListView(
                             shrinkWrap: true,
                             children: snapshot.data!.docs
@@ -51,7 +57,9 @@ class _BuildDrawerState extends State<BuildDrawer> {
                               Map<String, dynamic> data =
                                   document.data()! as Map<String, dynamic>;
                               return ListTile(
-                                // leading: Text(),
+                                leading: CircleAvatar(
+                                  child: Image.network(data['avatar']),
+                                ),
                                 title: Text(
                                   '${data['name']}',
                                   maxLines: 3,
@@ -62,6 +70,7 @@ class _BuildDrawerState extends State<BuildDrawer> {
                                   maxLines: 2,
                                   style: TextStyle(fontSize: 15),
                                 ),
+                                // trailing:
                               );
                             }).toList(),
                           );

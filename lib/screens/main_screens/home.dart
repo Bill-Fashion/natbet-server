@@ -126,8 +126,6 @@ class _HomeState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    //MasterCard Icon
-
                                     Row(
                                       children: [
                                         Flexible(

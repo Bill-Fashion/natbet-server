@@ -108,7 +108,7 @@ class _LogInState extends State<LoginScreen> {
               context, MaterialPageRoute(builder: (context) => SignUpScreen()));
         },
         child: Text(
-          "Sign up for Retttiwt",
+          "Sign up for Natbet",
           style: TextStyle(color: Colors.grey),
         ),
       ),

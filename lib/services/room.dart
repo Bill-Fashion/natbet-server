@@ -74,7 +74,8 @@ class RoomService {
           'rightValue': rightValue,
           'rightBudget': 0,
           'closed': false,
-          'condition': condition
+          'condition': condition,
+          'timestamp': Timestamp.now(),
         })
         .then((value) => Toast().showToast("Create success"))
         .catchError((error) => Toast().showToast("Failed to add user: $error"));
@@ -91,7 +92,7 @@ class RoomService {
         .collection("games")
         .doc(gameDocId);
     return game
-        .update({'winner': winner})
+        .update({'winner': winner, 'closed': true})
         .then((value) => Toast().showToast("Update success"))
         .catchError((error) => Toast().showToast("Failed to add user: $error"));
   }
@@ -118,6 +119,7 @@ class RoomService {
         .collection('rooms')
         .doc(roomDocId)
         .collection('games')
+        .orderBy('timestamp', descending: true)
         .snapshots();
   }
 

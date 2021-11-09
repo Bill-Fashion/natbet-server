@@ -20,10 +20,12 @@ class _WrapperState extends State<Wrapper> {
     }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      darkTheme: ThemeData(
-          primarySwatch: Colors.red,
-          // visualDensity: VisualDensity.adaptivePlatformDensity,
-          brightness: Brightness.dark),
+      themeMode: ThemeMode.system,
+      // darkTheme: ThemeData(
+      //     primarySwatch: Colors.red,
+
+      //     // visualDensity: VisualDensity.adaptivePlatformDensity,
+      //     brightness: Brightness.dark),
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),

@@ -101,6 +101,8 @@ class _CardBuiderState extends State<CardBuider> {
                                                   leftOdds,
                                                   currentUserDocSnapshot[
                                                       'leftBetBudget']);
+                                          print("Prize1: $prize");
+
                                           _userService.addUserCoins(
                                               currentUserSnapshot.data['coins'],
                                               prize);
@@ -115,9 +117,11 @@ class _CardBuiderState extends State<CardBuider> {
                                                 0) {
                                           int prize =
                                               _logicService.calculatePrize(
-                                                  leftOdds,
+                                                  rightOdds,
                                                   currentUserDocSnapshot[
                                                       'rightBetBudget']);
+                                          // print("Prize2: $prize");
+
                                           _userService.addUserCoins(
                                               currentUserSnapshot.data['coins'],
                                               prize);
@@ -190,21 +194,25 @@ class _CardBuiderState extends State<CardBuider> {
                                                                         .white),
                                                               ),
                                                             ),
-                                                            PopupMenuItem<int>(
-                                                              onTap: () {
-                                                                showSettingGameDialog(
-                                                                    context,
-                                                                    gameDocument
-                                                                        .id);
-                                                              },
-                                                              value: 0,
-                                                              child: Text(
-                                                                "Setting",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
+                                                            if (gameDocument[
+                                                                    'winner'] ==
+                                                                'none')
+                                                              PopupMenuItem<
+                                                                  int>(
+                                                                onTap: () {
+                                                                  showSettingGameDialog(
+                                                                      context,
+                                                                      gameDocument
+                                                                          .id);
+                                                                },
+                                                                value: 0,
+                                                                child: Text(
+                                                                  "Setting",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
-                                                            ),
                                                             PopupMenuItem<int>(
                                                               value: 1,
                                                               onTap: () {
@@ -236,145 +244,205 @@ class _CardBuiderState extends State<CardBuider> {
                                                 style: TextStyle(fontSize: 15),
                                               ),
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  children: [
-                                                    Flexible(
-                                                      flex: 4,
-                                                      child: Column(
-                                                        children: [
-                                                          Text(
-                                                              "${gameData['leftValue']}",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold)),
-                                                          // if (gameData['closed'] ==
-                                                          //     false)
-                                                          ElevatedButton(
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              primary: Colors
-                                                                  .red[400],
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Flexible(
+                                                        flex: 4,
+                                                        child: Column(
+                                                          children: [
+                                                            if (gameData[
+                                                                    'winner'] ==
+                                                                'Left')
+                                                              Text(
+                                                                "WIN",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w900,
+                                                                    color: Colors
+                                                                            .amber[
+                                                                        400],
+                                                                    letterSpacing:
+                                                                        2),
+                                                              ),
+                                                            if (gameData[
+                                                                    'winner'] ==
+                                                                'Right')
+                                                              Text(
+                                                                "LOSE",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w900,
+                                                                    color: Colors
+                                                                        .red,
+                                                                    letterSpacing:
+                                                                        2),
+                                                              ),
+                                                            Text(
+                                                                "${gameData['leftValue']}",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                            // if (gameData['closed'] ==
+                                                            //     false)
+                                                            ElevatedButton(
+                                                              style:
+                                                                  ElevatedButton
+                                                                      .styleFrom(
+                                                                primary: Colors
+                                                                    .red[400],
+                                                              ),
+                                                              onPressed:
+                                                                  () async => {
+                                                                gameData['closed'] ==
+                                                                        false
+                                                                    ? await showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (context) {
+                                                                          return InputCoinForm(
+                                                                            gameDocument:
+                                                                                gameDocument,
+                                                                            currentPlayerSnapshot:
+                                                                                userBettingSnapshot.data,
+                                                                            roomDocId:
+                                                                                widget.roomDocId,
+                                                                            button:
+                                                                                0,
+                                                                            currentUserCoins:
+                                                                                currentUserSnapshot.data['coins'],
+                                                                          );
+                                                                        })
+                                                                    : null
+                                                              },
+                                                              child: Container(
+                                                                  child: Text(
+                                                                      "${gameData['leftBudget']}",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ))),
                                                             ),
-                                                            onPressed:
-                                                                () async => {
-                                                              gameData['closed'] ==
-                                                                      false
-                                                                  ? await showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (context) {
-                                                                        return InputCoinForm(
-                                                                          gameDocument:
-                                                                              gameDocument,
-                                                                          currentPlayerSnapshot:
-                                                                              userBettingSnapshot.data,
-                                                                          roomDocId:
-                                                                              widget.roomDocId,
-                                                                          button:
-                                                                              0,
-                                                                          currentUserCoins:
-                                                                              currentUserSnapshot.data['coins'],
-                                                                        );
-                                                                      })
-                                                                  : null
-                                                            },
-                                                            child: Container(
-                                                                child: Text(
-                                                                    "${gameData['leftBudget']}",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ))),
-                                                          ),
-                                                          Text(
-                                                              "Odds: $leftOdds"),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Flexible(
-                                                      flex: 1,
-                                                      child: Column(children: [
-                                                        Text("VS",
-                                                            style: TextStyle(
-                                                                color:
-                                                                    Colors.blue,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 25)),
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .circle),
-                                                          child: Text(
-                                                              "${gameData['condition']}"),
+                                                            Text(
+                                                                "Odds: ${leftOdds.toStringAsFixed(2)}"),
+                                                          ],
                                                         ),
-                                                      ]),
-                                                    ),
-                                                    Flexible(
-                                                      flex: 4,
-                                                      child: Column(
-                                                        children: [
-                                                          Text(
-                                                              "${gameData['rightValue']}",
+                                                      ),
+                                                      Flexible(
+                                                        flex: 1,
+                                                        child:
+                                                            Column(children: [
+                                                          Text("VS",
                                                               style: TextStyle(
+                                                                  color: Colors
+                                                                      .blue,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .bold)),
-                                                          // if (gameData['closed'] ==
-                                                          //     false)
-                                                          ElevatedButton(
-                                                            onPressed:
-                                                                () async => {
-                                                              gameData['closed'] ==
-                                                                      false
-                                                                  ? await showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (context) {
-                                                                        return InputCoinForm(
-                                                                          gameDocument:
-                                                                              gameDocument,
-                                                                          currentPlayerSnapshot:
-                                                                              userBettingSnapshot.data,
-                                                                          roomDocId:
-                                                                              widget.roomDocId,
-                                                                          button:
-                                                                              1,
-                                                                          currentUserCoins:
-                                                                              currentUserSnapshot.data['coins'],
-                                                                        );
-                                                                      })
-                                                                  : null
-                                                            },
-                                                            child: Container(
-                                                              child: Text(
-                                                                  "${gameData['rightBudget']}"),
-                                                            ),
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    primary: Colors
-                                                                        .blue),
+                                                                          .bold,
+                                                                  fontSize:
+                                                                      25)),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle),
+                                                            child: Text(
+                                                                "${gameData['condition']}"),
                                                           ),
-                                                          Text(
-                                                              "Odds: $rightOdds"),
-                                                        ],
+                                                        ]),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
+                                                      Flexible(
+                                                        flex: 4,
+                                                        child: Column(
+                                                          children: [
+                                                            if (gameData[
+                                                                    'winner'] ==
+                                                                'Right')
+                                                              Text(
+                                                                "WIN",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w900,
+                                                                    color: Colors
+                                                                            .amber[
+                                                                        400],
+                                                                    letterSpacing:
+                                                                        2),
+                                                              ),
+                                                            if (gameData[
+                                                                    'winner'] ==
+                                                                'Left')
+                                                              Text(
+                                                                "LOSE",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w900,
+                                                                    color: Colors
+                                                                        .red,
+                                                                    letterSpacing:
+                                                                        2),
+                                                              ),
+                                                            Text(
+                                                                "${gameData['rightValue']}",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                            // if (gameData['closed'] ==
+                                                            //     false)
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () async => {
+                                                                gameData['closed'] ==
+                                                                        false
+                                                                    ? await showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (context) {
+                                                                          return InputCoinForm(
+                                                                            gameDocument:
+                                                                                gameDocument,
+                                                                            currentPlayerSnapshot:
+                                                                                userBettingSnapshot.data,
+                                                                            roomDocId:
+                                                                                widget.roomDocId,
+                                                                            button:
+                                                                                1,
+                                                                            currentUserCoins:
+                                                                                currentUserSnapshot.data['coins'],
+                                                                          );
+                                                                        })
+                                                                    : null
+                                                              },
+                                                              child: Container(
+                                                                child: Text(
+                                                                    "${gameData['rightBudget']}"),
+                                                              ),
+                                                              style: ElevatedButton
+                                                                  .styleFrom(
+                                                                      primary:
+                                                                          Colors
+                                                                              .blue),
+                                                            ),
+                                                            Text(
+                                                                "Odds: ${rightOdds.toStringAsFixed(2)}"),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )),
                                               Divider(
                                                 thickness: 2,
                                               ),
