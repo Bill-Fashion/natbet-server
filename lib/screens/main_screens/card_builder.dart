@@ -101,8 +101,7 @@ class _CardBuiderState extends State<CardBuider> {
                                                   leftOdds,
                                                   currentUserDocSnapshot[
                                                       'leftBetBudget']);
-                                          print(FirebaseAuth
-                                              .instance.currentUser!.uid);
+
                                           print("Prize1: $prize");
 
                                           _userService.addUserCoins(
@@ -122,8 +121,6 @@ class _CardBuiderState extends State<CardBuider> {
                                                   rightOdds,
                                                   currentUserDocSnapshot[
                                                       'rightBetBudget']);
-                                          // print("Prize2: $prize");
-
                                           _userService.addUserCoins(
                                               currentUserSnapshot.data['coins'],
                                               prize);

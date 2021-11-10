@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:natbet/screens/auth_screens/login.dart';
 import 'package:natbet/screens/main_screens/home.dart';
+import 'package:natbet/screens/main_screens/room.dart';
 import 'package:natbet/services/auth.dart';
+import 'package:natbet/wrapper.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -18,7 +20,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -47,7 +48,7 @@ class _MyAppState extends State<MyApp> {
         home: Consumer<AuthService>(
           builder: (context, user, child) {
             if (user.isLoggedIn()) {
-              return HomeScreen();
+              return Wrapper();
             } else {
               return LoginScreen();
             }
