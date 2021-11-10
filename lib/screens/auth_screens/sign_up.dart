@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:natbet/models/user.dart';
 import 'package:natbet/services/auth.dart';
 import 'package:natbet/services/toast.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +19,8 @@ class _SignUpState extends State<SignUpScreen> {
   var errorMsg = '';
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel?>(context);
-    AuthService _authService = AuthService();
+    // final user = Provider.of<UserModel?>(context);
+    final authService = Provider.of<AuthService>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -147,9 +146,11 @@ class _SignUpState extends State<SignUpScreen> {
                             {Toast().showToast('"name" are required')}
                           else
                             {
-                              _authService.signUp(name, email, password),
-                              if (user?.id != null)
+                              authService.signUp(name, email, password),
+                              if (authService.isLoggedIn())
                                 {
+                                  print(
+                                      "Inside sign-up ${authService.isLoggedIn()}"),
                                   Navigator.pop(context),
                                 },
                             }

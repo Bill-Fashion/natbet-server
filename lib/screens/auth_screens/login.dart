@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:natbet/screens/auth_screens/sign_up.dart';
 import 'package:natbet/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -77,12 +78,14 @@ class _LogInState extends State<LoginScreen> {
     );
   }
 
-  Widget signInButton() {
+  Widget signInButton(AuthService authService) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25),
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () async => {AuthService().signIn(email, password)},
+        onPressed: () async => {
+          authService.signIn(email, password),
+        },
         style: ElevatedButton.styleFrom(
           onPrimary: Colors.red,
           elevation: 5,
@@ -99,7 +102,7 @@ class _LogInState extends State<LoginScreen> {
     );
   }
 
-  Widget signUpButton() {
+  Widget signUpButton(AuthService authService) {
     return Container(
       alignment: Alignment.center,
       child: TextButton(
@@ -115,8 +118,16 @@ class _LogInState extends State<LoginScreen> {
     );
   }
 
+  // @override
+  // void dispose() {
+  //   // _emailController.dispose();
+  //   // _passwordController.dispose();
+  //   super.dispose();
+  // }
+
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
     return Scaffold(
         body: AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -147,8 +158,8 @@ class _LogInState extends State<LoginScreen> {
                             children: <Widget>[
                               buildEmail(),
                               buildPassword(),
-                              signInButton(),
-                              signUpButton()
+                              signInButton(authService),
+                              signUpButton(authService)
                             ],
                           ),
                         ),

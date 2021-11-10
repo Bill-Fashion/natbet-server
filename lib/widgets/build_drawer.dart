@@ -21,7 +21,7 @@ class _BuildDrawerState extends State<BuildDrawer> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Charts",
                       style: TextStyle(
@@ -43,36 +43,35 @@ class _BuildDrawerState extends State<BuildDrawer> {
                               ConnectionState.waiting) {
                             return Text("Loading");
                           }
-                          var number = snapshot.data!.docs
+                          List<dynamic> users = snapshot.data!.docs
                               .map((DocumentSnapshot document) {
                             Map<String, dynamic> data =
                                 document.data()! as Map<String, dynamic>;
-                            return data.values;
+                            return data;
                           }).toList();
-                          print(number[0]);
-                          return ListView(
+
+                          return ListView.builder(
                             shrinkWrap: true,
-                            children: snapshot.data!.docs
-                                .map((DocumentSnapshot document) {
-                              Map<String, dynamic> data =
-                                  document.data()! as Map<String, dynamic>;
+                            physics: ScrollPhysics(),
+                            itemCount: users.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final user = users[index];
                               return ListTile(
                                 leading: CircleAvatar(
-                                  child: Image.network(data['avatar']),
+                                  child: Image.network(user['avatar']),
                                 ),
                                 title: Text(
-                                  '${data['name']}',
+                                  '${user['name']}',
                                   maxLines: 3,
                                   style: TextStyle(fontSize: 15),
                                 ),
                                 subtitle: Text(
-                                  'Coins: ${data['coins'].toString()}',
+                                  'Coins: ${user['coins'].toString()}',
                                   maxLines: 2,
                                   style: TextStyle(fontSize: 15),
                                 ),
-                                // trailing:
                               );
-                            }).toList(),
+                            },
                           );
                         }),
                   ),

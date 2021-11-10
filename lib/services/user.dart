@@ -35,4 +35,11 @@ class UserService {
         .orderBy('coins', descending: true)
         .snapshots();
   }
+
+  Future<void> changeUserName(String userName) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({'name': userName});
+  }
 }

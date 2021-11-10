@@ -25,7 +25,7 @@ class _RoomScreenState extends State<RoomScreen> {
           }
 
           if (roomSnapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
 
           return Scaffold(

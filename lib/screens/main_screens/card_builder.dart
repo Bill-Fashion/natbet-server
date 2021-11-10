@@ -101,6 +101,8 @@ class _CardBuiderState extends State<CardBuider> {
                                                   leftOdds,
                                                   currentUserDocSnapshot[
                                                       'leftBetBudget']);
+                                          print(FirebaseAuth
+                                              .instance.currentUser!.uid);
                                           print("Prize1: $prize");
 
                                           _userService.addUserCoins(
@@ -173,7 +175,7 @@ class _CardBuiderState extends State<CardBuider> {
                                                                         25),
                                                           ),
                                                           icon: Icon(Icons
-                                                              .more_vert_rounded), //don't specify icon if you want 3 dot menu
+                                                              .more_vert_rounded),
                                                           color: Colors.black,
                                                           itemBuilder:
                                                               (context) => [
