@@ -1,4 +1,4 @@
-// const { sendNotify } = require("../handler/notification/notify_handler");
+
 module.exports = {
     firebaseResult: async (req, res) => {
         const {roomId, gameId, winner} = req.body;
@@ -7,10 +7,12 @@ module.exports = {
         var betBudget;
         var odds;
         // var now = admin.firestore.Timestamp.now().toDate();
-        const gameDoc = await admin.firestore().collection('rooms').doc(roomId).collection('games').doc(gameId).get();
-        // console.log(observer);
+        const gameDocDb = await admin.firestore().collection('rooms').doc(roomId).collection('games').doc(gameId);
+        const gameDocUpdate = await gameDocDb.update({
+          winner: winner,
+        });
+        const gameDoc = await gameDocDb.get();
         if (!gameDoc.exists) {
-            console.log('No such document!');
           } else {
             prizePool = gameDoc.data()['leftBudget'] + gameDoc.data()['rightBudget']
             if (winner == 'Left') {
@@ -21,8 +23,6 @@ module.exports = {
               odds = prizePool / winSideBudget;
             }
           }
-          console.log("odds:", odds);
-          console.log("prize pool", prizePool);
         const playersDocs = await admin.firestore()
             .collection('rooms')
             .doc(roomId)
@@ -32,7 +32,6 @@ module.exports = {
             .get();
           playersDocs.forEach(async doc => {
             var prize;
-            console.log(doc.id);
             const playerDoc = await admin.firestore().collection('rooms')
               .doc(roomId)
               .collection('games')
@@ -45,25 +44,16 @@ module.exports = {
             } else {
               betBudget = playerDoc.data()["rightBetBudget"]
             }
-            console.log("betBudget: ", betBudget);
             prize = Math.round(betBudget * odds);
             const userDb = await admin.firestore().collection('users').doc(doc.id);
             const getUserCurrentCoins = await userDb.get();
-            console.log("current coins: ", getUserCurrentCoins.data()['coins']);;
             const updateUserCoins = await userDb.update({
               coins: getUserCurrentCoins.data()['coins'] + prize
             });
-            console.log('Player: ', doc.id);
-            console.log('Prize: ', prize);
           });
-        // console.log(odds);
-          
         res.status(200).json({
             message: "Set successfully",
-            
         })
-        
-    
     }
 }
 

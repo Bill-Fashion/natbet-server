@@ -5,9 +5,9 @@ import 'package:natbet/models/result_response.dart';
 class ApiManagement {
   Future<ResultResponse> setResult(
       String roomId, String gameId, String winner) async {
-    final uri = Uri.http('192.168.1.5:8080', '/result/pay');
+    // final uri = Uri.http('https://natbet.herokuapp.com', '/result/pay');
     final response = await http.post(
-      uri,
+      Uri.parse('https://natbet.herokuapp.com/result/pay'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
