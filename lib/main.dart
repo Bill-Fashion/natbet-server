@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:natbet/screens/auth_screens/login.dart';
-import 'package:natbet/screens/main_screens/home.dart';
-import 'package:natbet/screens/main_screens/room.dart';
 import 'package:natbet/services/auth.dart';
 import 'package:natbet/wrapper.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +26,6 @@ class _MyAppState extends State<MyApp> {
           lazy: false,
           create: (_) => AuthService(),
         ),
-        // Provider<MessageDao>(
-        //   lazy: false,
-        //   create: (_) => MessageDao(),
-        // ),
       ],
       child: MaterialApp(
         themeMode: ThemeMode.dark,

@@ -1,11 +1,22 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const PORT = process.env.PORT || 8080;
+const cors = require("cors");
+const routes = require('./routes/index');
+global.admin = require("firebase-admin");
+const serviceAccount = require("./serviceAccountKey.json");
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.use(cors());
+app.use(express.json());
+routes(app);
+
+
+
+app.listen(PORT, () => {
+  console.log(`Server app listening at http://localhost:${PORT}`)
 })
+module.exports = app;

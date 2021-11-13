@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:natbet/services/api_management.dart';
 import 'package:natbet/services/room.dart';
 
 class UpdateDialog extends StatefulWidget {
@@ -13,6 +14,7 @@ class UpdateDialog extends StatefulWidget {
 
 class _UpdateDialogState extends State<UpdateDialog> {
   RoomService _roomService = RoomService();
+  ApiManagement _apiManagement = ApiManagement();
   String? finalResult;
   final winner = ["Left", "Right"];
   @override
@@ -48,11 +50,12 @@ class _UpdateDialogState extends State<UpdateDialog> {
           child: Text('Okay'),
           onPressed: () {
             if (finalResult != null) {
-              _roomService.updateGame(
+              _apiManagement.setResult(
                 "${widget.roomDocId}",
                 "${widget.gameDocId}",
                 "$finalResult",
               );
+              _roomService.closeGame(widget.roomDocId, widget.gameDocId);
               Navigator.pop(context);
             }
           },

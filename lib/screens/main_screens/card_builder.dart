@@ -79,59 +79,7 @@ class _CardBuiderState extends State<CardBuider> {
                                         child: CircularProgressIndicator(),
                                       );
                                     }
-                                    DocumentSnapshot currentUserDocSnapshot =
-                                        userBettingSnapshot.data;
-                                    // Check winner
-                                    bool checked = false;
-
-                                    if (currentUserDocSnapshot.exists) {
-                                      if ((currentUserDocSnapshot[
-                                                      'leftBetBudget'] !=
-                                                  0 ||
-                                              currentUserDocSnapshot[
-                                                      'rightBetBudget'] !=
-                                                  0) &&
-                                          !checked) {
-                                        if (gameDocument['winner'] == 'Left' &&
-                                            currentUserDocSnapshot[
-                                                    'leftBetBudget'] !=
-                                                0) {
-                                          int prize =
-                                              _logicService.calculatePrize(
-                                                  leftOdds,
-                                                  currentUserDocSnapshot[
-                                                      'leftBetBudget']);
-
-                                          print("Prize1: $prize");
-
-                                          _userService.addUserCoins(
-                                              currentUserSnapshot.data['coins'],
-                                              prize);
-                                          _roomService.updateCurrentUserBetCoin(
-                                              widget.roomDocId,
-                                              gameDocument.id);
-                                          checked = true;
-                                        }
-                                        if (gameDocument['winner'] == 'Right' &&
-                                            currentUserDocSnapshot[
-                                                    'rightBetBudget'] !=
-                                                0) {
-                                          int prize =
-                                              _logicService.calculatePrize(
-                                                  rightOdds,
-                                                  currentUserDocSnapshot[
-                                                      'rightBetBudget']);
-                                          _userService.addUserCoins(
-                                              currentUserSnapshot.data['coins'],
-                                              prize);
-                                          _roomService.updateCurrentUserBetCoin(
-                                              widget.roomDocId,
-                                              gameDocument.id);
-                                          checked = true;
-                                        }
-                                      }
-                                    }
-
+                                    
                                     return Card(
                                       elevation: 5,
                                       shape: RoundedRectangleBorder(
@@ -398,8 +346,7 @@ class _CardBuiderState extends State<CardBuider> {
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold)),
-                                                            // if (gameData['closed'] ==
-                                                            //     false)
+                                                            
                                                             ElevatedButton(
                                                               onPressed:
                                                                   () async => {
@@ -471,7 +418,7 @@ class _CardBuiderState extends State<CardBuider> {
                                                             'closed'] ==
                                                         true)
                                                       Container(
-                                                        // margin: EdgeInsets.all(2),
+                                                        
                                                         decoration: BoxDecoration(
                                                             color: Colors.red
                                                                 .withOpacity(

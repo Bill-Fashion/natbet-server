@@ -7,13 +7,7 @@ import 'package:natbet/services/toast.dart';
 class AuthService extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
   Toast _toast = Toast();
-  // UserModel _userFromFireBaseUser(User? user) {
-  //   return UserModel(id: user?.uid);
-  // }
 
-  // Stream<UserModel?> get user {
-  //   return auth.authStateChanges().map(_userFromFireBaseUser);
-  // }
   bool isLoggedIn() {
     return auth.currentUser != null;
   }
