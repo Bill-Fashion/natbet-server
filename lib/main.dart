@@ -36,7 +36,6 @@ class _MyAppState extends State<MyApp> {
           primaryColorDark: Colors.red,
           brightness: Brightness.dark,
           backgroundColor: Colors.black,
-          // Color(0xFF212121),
           dividerColor: Colors.black12,
         ),
         home: Consumer<AuthService>(
