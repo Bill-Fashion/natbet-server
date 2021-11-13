@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:natbet/models/user.dart';
+import 'package:natbet/screens/auth_screens/login.dart';
 import 'package:natbet/services/auth.dart';
 import 'package:natbet/wrapper.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -18,30 +18,36 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _initialization,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {}
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            return StreamProvider<UserModel?>.value(
-              value: AuthService().user,
-              initialData: UserModel(),
-              child: MaterialApp(
-                themeMode: ThemeMode.system,
-                debugShowCheckedModeBanner: false,
-                darkTheme: ThemeData(
-                    primarySwatch: Colors.red,
-                    // visualDensity: VisualDensity.adaptivePlatformDensity,
-                    brightness: Brightness.dark),
-                home: Wrapper(),
-              ),
-            );
-          }
-          return CircularProgressIndicator();
-        });
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthService>(
+          lazy: false,
+          create: (_) => AuthService(),
+        ),
+      ],
+      child: MaterialApp(
+        themeMode: ThemeMode.dark,
+        debugShowCheckedModeBanner: false,
+        darkTheme: ThemeData(
+          primarySwatch: Colors.red,
+          primaryColor: Colors.red,
+          primaryColorDark: Colors.red,
+          brightness: Brightness.dark,
+          backgroundColor: Colors.black,
+          dividerColor: Colors.black12,
+        ),
+        home: Consumer<AuthService>(
+          builder: (context, user, child) {
+            if (user.isLoggedIn()) {
+              return Wrapper();
+            } else {
+              return LoginScreen();
+            }
+          },
+        ),
+      ),
+    );
   }
 }

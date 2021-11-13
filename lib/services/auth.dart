@@ -1,24 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:natbet/constants.dart';
-import 'package:natbet/models/user.dart';
 import 'package:natbet/services/toast.dart';
 
-class AuthService {
+class AuthService extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
   Toast _toast = Toast();
-  UserModel _userFromFireBaseUser(User? user) {
-    return UserModel(id: user?.uid);
+
+  bool isLoggedIn() {
+    return auth.currentUser != null;
   }
 
-  Stream<UserModel?> get user {
-    return auth.authStateChanges().map(_userFromFireBaseUser);
+  String? userId() {
+    return auth.currentUser?.uid;
+  }
+
+  String? email() {
+    return auth.currentUser?.email;
   }
 
   Future signUp(name, email, password) async {
     try {
       UserCredential user = (await auth.createUserWithEmailAndPassword(
           email: email, password: password));
+
       final uid = user.user!.uid;
       await FirebaseFirestore.instance
           .collection('users')
@@ -30,8 +36,9 @@ class AuthService {
         'avatar': defaultAvatarImg,
         'coins': 100000,
       });
-
-      _userFromFireBaseUser(user.user);
+      notifyListeners();
+      print(auth.currentUser != null);
+      // _userFromFireBaseUser(user.user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         _toast.showToast('The password provided is too weak.');
@@ -45,10 +52,9 @@ class AuthService {
 
   Future signIn(email, password) async {
     try {
-      User user = (await auth.signInWithEmailAndPassword(
-          email: email, password: password)) as User;
-
-      _userFromFireBaseUser(user);
+      await auth.signInWithEmailAndPassword(email: email, password: password);
+      notifyListeners();
+      // _userFromFireBaseUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         _toast.showToast('No user found for that email.');
@@ -60,7 +66,8 @@ class AuthService {
 
   Future signOut() async {
     try {
-      return await auth.signOut();
+      await auth.signOut();
+      notifyListeners();
     } catch (e) {
       _toast.showToast(e.toString());
       return null;

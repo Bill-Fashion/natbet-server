@@ -21,12 +21,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeState extends State<HomeScreen> {
   UserService _userService = UserService();
-  AuthService _authService = AuthService();
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     RoomService _roomService = RoomService();
-
+    final authService = Provider.of<AuthService>(context, listen: false);
     return MultiProvider(
       providers: [
         StreamProvider(
@@ -39,7 +42,7 @@ class _HomeState extends State<HomeScreen> {
               _userService.getUserInfo(FirebaseAuth.instance.currentUser!.uid),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
 
             UserModel user = UserModel(
@@ -74,7 +77,7 @@ class _HomeState extends State<HomeScreen> {
                     label: 'Log out',
                     backgroundColor: Colors.red,
                     onTap: () {
-                      _showDialog(context);
+                      _showDialog(context, authService);
                     },
                   ),
                 ],
@@ -140,7 +143,10 @@ class _HomeState extends State<HomeScreen> {
                                         Flexible(
                                           flex: 1,
                                           child: IconButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                showEnterNameDialog(
+                                                    context, _userService);
+                                              },
                                               icon:
                                                   Icon(Icons.create_outlined)),
                                         )
@@ -269,7 +275,8 @@ class _HomeState extends State<HomeScreen> {
                                       .getUserInfo("${data['creator']}"),
                                   builder: (context, userSnapshot) {
                                     if (!userSnapshot.hasData) {
-                                      return CircularProgressIndicator();
+                                      return Center(
+                                          child: CircularProgressIndicator());
                                     }
                                     return GestureDetector(
                                       onTap: () => {
@@ -402,10 +409,10 @@ class _HomeState extends State<HomeScreen> {
     );
   }
 
-  _showDialog(BuildContext context) {
-    VoidCallback continueCallBack = () async => {
-          _authService.signOut(),
-          Navigator.of(context).pop(),
+  _showDialog(BuildContext context, AuthService authService) {
+    VoidCallback continueCallBack = () => {
+          authService.signOut(),
+          // Navigator.of(context).pop(),
         };
     BlurryDialog alert = BlurryDialog(
         title: "Log out",
@@ -420,7 +427,60 @@ class _HomeState extends State<HomeScreen> {
     );
   }
 
+  final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
+  Future<void> showEnterNameDialog(
+      BuildContext context, UserService _userService) async {
+    String newName = '';
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          final TextEditingController _nameTextEditingController =
+              TextEditingController();
+
+          return AlertDialog(
+            backgroundColor: Color.fromRGBO(26, 29, 33, 1),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            content: Form(
+                key: _formKey1,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      controller: _nameTextEditingController,
+                      validator: (value) {
+                        return value != '' ? null : "Name can't be empty";
+                      },
+                      onChanged: ((value) => setState(() => newName = value)),
+                      decoration: InputDecoration(hintText: "Enter name"),
+                    ),
+                  ],
+                )),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  // Do something like updating SharedPreferences or User Settings etc.
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  if (_formKey1.currentState!.validate()) {
+                    // Do something like updating SharedPreferences or User Settings etc.
+
+                    Navigator.pop(context);
+                    _userService.changeUserName(newName);
+                  }
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   Future<void> showEnterPasswordDialog(
       BuildContext context, String password, String roomDocId) async {
     String? roomPassword = '';
