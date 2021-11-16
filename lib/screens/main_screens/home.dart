@@ -1,10 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:natbet/models/notification.dart';
 import 'package:natbet/models/user.dart';
 import 'package:natbet/screens/main_screens/room.dart';
 import 'package:natbet/services/auth.dart';
+import 'package:natbet/services/local_notification.dart';
 import 'package:natbet/services/room.dart';
 import 'package:natbet/services/user.dart';
 import 'package:natbet/widgets/alert_dialog.dart';
@@ -21,6 +28,71 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeState extends State<HomeScreen> {
   UserService _userService = UserService();
+  // late String _token;
+  Future<void> saveToken() async {
+    // Get the token each time the application loads
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    // Save the initial token to the database
+    await _userService.saveTokenToDatabase(token);
+
+    // Any time the token refreshes, store this in the database too.
+    FirebaseMessaging.instance.onTokenRefresh
+        .listen(_userService.saveTokenToDatabase);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    saveToken();
+    LocalNotificationService.initialize(context);
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        Map<String, dynamic> data = message.data;
+
+        NotificationModel notificationContents =
+            NotificationModel.fromMap(jsonDecode(data['notification']));
+
+        LocalNotificationService.display(notificationContents);
+      }
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      Map<String, dynamic> data = message.data;
+
+      NotificationModel notificationContents =
+          NotificationModel.fromMap(jsonDecode(data['notification']));
+
+      LocalNotificationService.display(notificationContents);
+    });
+  }
+
+  final _picker = new ImagePicker();
+  late File _avatarImgUrl;
+
+  Future getImageCam() async {
+    final pickedCam = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      if (pickedCam != null) {
+        _avatarImgUrl = File(pickedCam.path);
+
+        _userService.saveAvatar(_avatarImgUrl);
+      }
+    });
+  }
+
+  Future getImageGallery() async {
+    final pickedGallery = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedGallery != null) {
+        _avatarImgUrl = File(pickedGallery.path);
+
+        _userService.saveAvatar(_avatarImgUrl);
+      }
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -30,6 +102,7 @@ class _HomeState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     RoomService _roomService = RoomService();
     final authService = Provider.of<AuthService>(context, listen: false);
+
     return MultiProvider(
       providers: [
         StreamProvider(
@@ -114,11 +187,20 @@ class _HomeState extends State<HomeScreen> {
                                 flex: 4,
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 10),
-                                  child: CircleAvatar(
-                                    radius: 50,
-                                    backgroundColor: Colors.teal[400],
-                                    backgroundImage:
-                                        NetworkImage("${user.avatarURL}"),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            _buildPopupDialog(context),
+                                      );
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 50,
+                                      backgroundColor: Colors.teal[400],
+                                      backgroundImage:
+                                          NetworkImage("${user.avatarURL}"),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -479,6 +561,29 @@ class _HomeState extends State<HomeScreen> {
             ],
           );
         });
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return new AlertDialog(
+      backgroundColor: Color.fromRGBO(26, 29, 33, 1),
+      // title: const Text('Popup example'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextButton(
+              onPressed: () => [getImageCam(), Navigator.pop(context)],
+              child: Text(
+                "Image from camera",
+              )),
+          TextButton(
+              onPressed: () => [getImageGallery(), Navigator.pop(context)],
+              child: Text(
+                "Image from library",
+              )),
+        ],
+      ),
+    );
   }
 
   Future<void> showEnterPasswordDialog(

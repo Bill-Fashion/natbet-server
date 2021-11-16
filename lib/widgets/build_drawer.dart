@@ -58,7 +58,9 @@ class _BuildDrawerState extends State<BuildDrawer> {
                               final user = users[index];
                               return ListTile(
                                 leading: CircleAvatar(
-                                  child: Image.network(user['avatar']),
+                                  backgroundImage:
+                                      NetworkImage("${user['avatar']}"),
+                                  // child: Image.network(user['avatar']),
                                 ),
                                 title: Text(
                                   '${user['name']}',

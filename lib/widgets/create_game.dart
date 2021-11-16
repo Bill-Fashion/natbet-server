@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:natbet/services/api_management.dart';
 import 'package:natbet/services/room.dart';
 
 class CreateGame extends StatefulWidget {
@@ -19,6 +20,7 @@ class CreateGame extends StatefulWidget {
 
 class _CreateGameState extends State<CreateGame> {
   RoomService _roomService = RoomService();
+  ApiManagement _apiManagement = ApiManagement();
   final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
   final TextEditingController _nameTextEditingController1 =
       TextEditingController();
@@ -124,6 +126,8 @@ class _CreateGameState extends State<CreateGame> {
                 widget.selectedUpdate == false) {
               _roomService.createGame("${widget.roomDocId}", "$finalType",
                   "$description", "$leftValue", "$rightValue", "$condition");
+              _apiManagement.createNotification(
+                  "${widget.roomDocId}", "$description");
               Navigator.pop(context);
             }
           },
