@@ -32,6 +32,7 @@ class ApiManagement {
   Future<ResultResponse> createNotification(
       String roomId, String description) async {
     // final uri = Uri.http('192.168.1.5:8080', '/notify/push');
+    // Uri.parse('https://natbet.herokuapp.com/notify/push')
     final response = await http.post(
       Uri.parse('https://natbet.herokuapp.com/notify/push'),
       headers: <String, String>{
