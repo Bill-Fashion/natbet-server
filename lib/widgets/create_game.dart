@@ -32,8 +32,8 @@ class _CreateGameState extends State<CreateGame> {
   String? leftValue;
   String? rightValue;
   String? condition;
+  bool? isChecked1 = false;
 
-  bool? isChecked = false;
   @override
   Widget build(BuildContext context) {
     final gameTypes = ["Sic bo", "Win - Lose"];
@@ -90,16 +90,16 @@ class _CreateGameState extends State<CreateGame> {
                 Row(
                   children: [
                     Checkbox(
-                        value: isChecked,
+                        value: isChecked1,
                         onChanged: (checked) {
                           setState(() {
-                            isChecked = checked;
+                            isChecked1 = checked;
                           });
                         }),
                     Text("Condition")
                   ],
                 ),
-                if (isChecked!)
+                if (isChecked1!)
                   TextFormField(
                     controller: _nameTextEditingController4,
                     validator: (value) {
