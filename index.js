@@ -1,10 +1,21 @@
-const resultRouter = require('./result_route');
-const notifyRouter = require('./notification_route');
+const express = require('express')
+const app = express()
+const PORT = process.env.PORT || 8080;
+const cors = require("cors");
+const routes = require('./routes/index');
+global.admin = require("firebase-admin");
+const serviceAccount = require("./serviceAccountKey.json");
 
-function routes(app){
-    app.use("/result", resultRouter);
-    app.use("/notify", notifyRouter);
-}
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
+app.use(cors());
+app.use(express.json());
+routes(app);
 
-module.exports = routes; 
+app.listen(PORT, () => {
+  console.log(`Server app listening at http://localhost:${PORT}`)
+})
+
+module.exports = app;
