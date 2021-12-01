@@ -496,7 +496,7 @@ class _HomeState extends State<HomeScreen> {
           authService.signOut(),
           // Navigator.of(context).pop(),
         };
-    BlurryDialogWidget alert = BlurryDialogWidget(
+    BlurryDialog alert = BlurryDialog(
         title: "Log out",
         content: "Are you sure you want to log out",
         continueCallBack: continueCallBack);

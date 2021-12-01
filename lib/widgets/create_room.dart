@@ -14,8 +14,7 @@ class CreateRoomDialog {
               TextEditingController();
           final TextEditingController _passwordTextEditingController =
               TextEditingController();
-          bool? isChecked1 = false;
-
+          bool? isChecked = false;
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               backgroundColor: Color.fromRGBO(26, 29, 33, 1),
@@ -39,16 +38,16 @@ class CreateRoomDialog {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Checkbox(
-                              value: isChecked1,
+                              value: isChecked,
                               onChanged: (checked) {
                                 setState(() {
-                                  isChecked1 = checked;
+                                  isChecked = checked;
                                 });
                               }),
                           Text("Password"),
                         ],
                       ),
-                      if (isChecked1!)
+                      if (isChecked!)
                         TextFormField(
                           controller: _passwordTextEditingController,
                           validator: (value) {

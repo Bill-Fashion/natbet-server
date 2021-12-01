@@ -1,12 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-class BlurryDialogWidget extends StatelessWidget {
+class BlurryDialog extends StatelessWidget {
   String? title;
   String? content;
   VoidCallback? continueCallBack;
 
-  BlurryDialogWidget(
+  BlurryDialog(
       {required this.title, required this.content, this.continueCallBack});
   TextStyle textStyle = TextStyle(color: Colors.white);
 
