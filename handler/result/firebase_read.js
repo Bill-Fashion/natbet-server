@@ -136,7 +136,14 @@ module.exports = {
   },
     setTimeoutToClose: async (req, res) => {
       const {roomId, gameId, milisecondSetted} = req.body;
-      let ts = Date.now();
+      // create Date object for current location
+      var d = new Date();
+      // convert to msec
+      // subtract local time zone offset
+      // get UTC time in msec
+      let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+      let ts = utc + (3600000*(+7));
+
       let milisecondLeft = milisecondSetted - ts;
       const gameDb = await admin.firestore()
             .collection('rooms')
