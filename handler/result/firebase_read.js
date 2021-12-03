@@ -150,6 +150,7 @@ module.exports = {
             .doc(roomId)
             .collection('games')
             .doc(gameId)
+      
       if (milisecondLeft <= 0) {
         gameDb.update({
           closed: true,
@@ -161,12 +162,13 @@ module.exports = {
             gameDb.update({
               closed: true,
               closedInProgress: false
-            });
-        }, milisecondLeft);
-        res.status(200).json({
-          message: "Success"
-        })
+            }); 
+            
+        }, milisecondLeft);        
       }
+      res.status(200).json({
+        message: "Success"
+      })
     },
     setIntervalCoins: async (req, res) => {
       const {miliseconds} = req.body;
