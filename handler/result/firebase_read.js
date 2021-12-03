@@ -148,7 +148,7 @@ module.exports = {
       let ts = utc + (3600000*(-5));
       let tl = utc + (3600000*(7));
       let info = '';
-      let milisecondLeft = milisecondSetted - ts;
+      let milisecondLeft = milisecondSetted - tl;
       let nds = new Date(tl);
       let nl = nds.toLocaleString();
       let ndl = new Date(ts);
@@ -183,6 +183,7 @@ module.exports = {
         milisecondSetted: milisecondSetted,
         milisecondLeft: milisecondLeft,
         ts: ts,
+        tl: tl,
         nd: nd,
         nl: nl,
         nows: nows
