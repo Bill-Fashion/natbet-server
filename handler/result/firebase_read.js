@@ -138,13 +138,21 @@ module.exports = {
       const {roomId, gameId, milisecondSetted} = req.body;
       // create Date object for current location
       var d = new Date();
+      var now = Date.now();
+      let now1 = new Date(now);
+      let nows = now1.toLocaleString();
       // convert to msec
       // subtract local time zone offset
       // get UTC time in msec
       let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-      let ts = utc + (3600000*(+7));
+      let ts = utc + (3600000*(-5));
+      let tl = utc + (3600000*(7));
       let info = '';
       let milisecondLeft = milisecondSetted - ts;
+      let nds = new Date(tl);
+      let nl = nds.toLocaleString();
+      let ndl = new Date(ts);
+      let nd = ndl.toLocaleString();
       const gameDb = await admin.firestore()
             .collection('rooms')
             .doc(roomId)
@@ -153,26 +161,31 @@ module.exports = {
       
       if (milisecondLeft <= 0) {
         info = 'inside negative'
-        gameDb.update({
-          closed: true,
-          closedInProgress: false
-        });
+        console.log(nd);
+        // gameDb.update({
+        //   closed: true,
+        //   closedInProgress: false
+        // });
       } else {
         info = 'inside positive'
-        setTimeout( async () => {
+        // console.log(nd);
+        // setTimeout( async () => {
           
-            gameDb.update({
-              closed: true,
-              closedInProgress: false
-            }); 
+            // gameDb.update({
+            //   closed: true,
+            //   closedInProgress: false
+            // }); 
             
-        }, milisecondLeft);        
+        // }, milisecondLeft);        
       }
       res.status(200).json({
         message: "Success",
         milisecondSetted: milisecondSetted,
         milisecondLeft: milisecondLeft,
-        ts: ts
+        ts: ts,
+        nd: nd,
+        nl: nl,
+        nows: nows
       })
     },
     setIntervalCoins: async (req, res) => {
