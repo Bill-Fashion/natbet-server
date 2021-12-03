@@ -143,7 +143,7 @@ module.exports = {
       // get UTC time in msec
       let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
       let ts = utc + (3600000*(+7));
-
+      let info = '';
       let milisecondLeft = milisecondSetted - ts;
       const gameDb = await admin.firestore()
             .collection('rooms')
@@ -152,11 +152,13 @@ module.exports = {
             .doc(gameId)
       
       if (milisecondLeft <= 0) {
+        info = 'inside negative'
         gameDb.update({
           closed: true,
           closedInProgress: false
         });
       } else {
+        info = 'inside positive'
         setTimeout( async () => {
           
             gameDb.update({
@@ -167,7 +169,10 @@ module.exports = {
         }, milisecondLeft);        
       }
       res.status(200).json({
-        message: "Success"
+        message: "Success",
+        milisecondSetted: milisecondSetted,
+        milisecondLeft: milisecondLeft,
+        ts: ts
       })
     },
     setIntervalCoins: async (req, res) => {
