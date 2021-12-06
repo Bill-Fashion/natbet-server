@@ -149,6 +149,8 @@ module.exports = {
       let tl = utc + (3600000*(7));
       let info = '';
       let milisecondLeft = milisecondSetted - tl;
+      let milisecondCheck = now - tl;
+      let dif = tl - ts;
       let nds = new Date(tl);
       let nl = nds.toLocaleString();
       let ndl = new Date(ts);
@@ -166,7 +168,8 @@ module.exports = {
         //   closed: true,
         //   closedInProgress: false
         // });
-      } else {
+      } else { 
+        console.log(nds);
         info = 'inside positive'
         // console.log(nd);
         // setTimeout( async () => {
@@ -182,11 +185,15 @@ module.exports = {
         message: "Success",
         milisecondSetted: milisecondSetted,
         milisecondLeft: milisecondLeft,
+        milisecondCheck: milisecondCheck,
+        utc: utc,
         ts: ts,
         tl: tl,
         nd: nd,
         nl: nl,
-        nows: nows
+        nows: nows,
+        nl: nl,
+        dif: dif
       })
     },
     setIntervalCoins: async (req, res) => {
