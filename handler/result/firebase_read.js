@@ -157,11 +157,10 @@ module.exports = {
               closed: true,
               closedInProgress: false
             });
-        }, milisecondLeft);        
+        }, milisecondLeft);
       } 
       res.status(200).json({
         message: "Success",
-        milisecondLeft: milisecondLeft
       }) 
     },
     setIntervalCoins: async (req, res) => {
