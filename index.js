@@ -15,11 +15,11 @@ app.use(cors());
 app.use(express.json());
 routes(app);
 
-//Ping heroku every 20p to keep server awake
+//Ping heroku every 5p to keep server awake
 setInterval(function() {
     http.get("https://natbet.herokuapp.com");
-}, 1200000); // every 20 minutes (1200000)
-
+}, 300000); // every 5 minutes (300000)
+ 
 app.listen(PORT, () => {
   console.log(`Server app listening at http://localhost:${PORT}`)
 })
