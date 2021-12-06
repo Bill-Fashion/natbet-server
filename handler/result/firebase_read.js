@@ -149,6 +149,7 @@ module.exports = {
       let tl = utc + (3600000*(7));
       let info = '';
       let milisecondLeft = milisecondSetted - tl;
+      let milisecondLeft1 = milisecondSetted - now;
       let milisecondCheck = now - tl;
       let dif = tl - ts;
       let nds = new Date(tl);
@@ -180,12 +181,13 @@ module.exports = {
             // }); 
             
         // }, milisecondLeft);        
-      }
+      } 
       res.status(200).json({
         message: "Success",
         milisecondSetted: milisecondSetted,
         milisecondLeft: milisecondLeft,
         milisecondCheck: milisecondCheck,
+        milisecondLeft1: milisecondLeft1,
         utc: utc,
         ts: ts,
         tl: tl,
