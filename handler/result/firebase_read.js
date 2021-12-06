@@ -136,26 +136,10 @@ module.exports = {
   },
     setTimeoutToClose: async (req, res) => {
       const {roomId, gameId, milisecondSetted} = req.body;
-      // create Date object for current location
-      var d = new Date();
+      
       var now = Date.now();
-      let now1 = new Date(now);
-      let nows = now1.toLocaleString();
-      // convert to msec
-      // subtract local time zone offset
-      // get UTC time in msec
-      let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-      let ts = utc + (3600000*(-5));
-      let tl = utc + (3600000*(7));
-      let info = '';
-      let milisecondLeft = milisecondSetted - tl;
-      let milisecondLeft1 = milisecondSetted - now;
-      let milisecondCheck = now - tl;
-      let dif = tl - ts;
-      let nds = new Date(tl);
-      let nl = nds.toLocaleString();
-      let ndl = new Date(ts);
-      let nd = ndl.toLocaleString();
+      
+      let milisecondLeft = milisecondSetted - now;
       const gameDb = await admin.firestore()
             .collection('rooms')
             .doc(roomId)
@@ -163,45 +147,26 @@ module.exports = {
             .doc(gameId)
       
       if (milisecondLeft <= 0) {
-        info = 'inside negative'
-        console.log(nd);
-        // gameDb.update({
-        //   closed: true,
-        //   closedInProgress: false
-        // });
+        gameDb.update({
+          closed: true,
+          closedInProgress: false
+        });
       } else { 
-        console.log(nds);
-        info = 'inside positive'
-        // console.log(nd);
-        // setTimeout( async () => {
-          
-            // gameDb.update({
-            //   closed: true,
-            //   closedInProgress: false
-            // }); 
-            
-        // }, milisecondLeft);        
+        setTimeout( async () => {
+            gameDb.update({
+              closed: true,
+              closedInProgress: false
+            });
+        }, milisecondLeft);        
       } 
       res.status(200).json({
         message: "Success",
-        milisecondSetted: milisecondSetted,
-        milisecondLeft: milisecondLeft,
-        milisecondCheck: milisecondCheck,
-        milisecondLeft1: milisecondLeft1,
-        utc: utc,
-        ts: ts,
-        tl: tl,
-        nd: nd,
-        nl: nl,
-        nows: nows,
-        nl: nl,
-        dif: dif
-      })
+      }) 
     },
     setIntervalCoins: async (req, res) => {
       const {miliseconds} = req.body;
       setInterval(function () {
-    }, miliseconds, 'freetuts', (miliseconds / 1000)) 
+    }, 604800000) 
     res.status(200).json({
       message: "Success"
     })
