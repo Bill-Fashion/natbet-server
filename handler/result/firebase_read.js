@@ -161,6 +161,7 @@ module.exports = {
       } 
       res.status(200).json({
         message: "Success",
+        milisecondLeft: milisecondLeft
       }) 
     },
     setIntervalCoins: async (req, res) => {
