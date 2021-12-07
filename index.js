@@ -17,7 +17,8 @@ routes(app);
 
 //Ping heroku every 5p to keep server awake
 setInterval(function() {
-    http.get("https://natbet.herokuapp.com");
+    http.get("http://natbet.herokuapp.com");
+    console.log("recall after 5 mins");
 }, 300000); // every 5 minutes (300000)
  
 app.listen(PORT, () => {
