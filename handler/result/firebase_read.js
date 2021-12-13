@@ -1,4 +1,4 @@
-
+const CronJob = require('../../node_modules/cron').CronJob;
 module.exports = {
     firebaseResult: async (req, res) => {
         const {roomId, gameId, winner} = req.body;
@@ -137,39 +137,48 @@ module.exports = {
     setTimeoutToClose: async (req, res) => {
       const {roomId, gameId, milisecondSetted} = req.body;
       
-      var now = Date.now();
-      
-      let milisecondLeft = milisecondSetted - now;
+      let date = new Date(milisecondSetted);
+      console.log("date: ", date);
       const gameDb = await admin.firestore()
             .collection('rooms')
             .doc(roomId)
             .collection('games')
             .doc(gameId)
-      
-      if (milisecondLeft <= 0) {
+      let milisecondsLeft = milisecondSetted - Date.now();
+      console.log("milisecondsLeft: ", milisecondsLeft);
+      if (milisecondsLeft <= 0) {
         gameDb.update({
           closed: true,
           closedInProgress: false
         });
-      } else { 
-        setTimeout( async () => {
-            gameDb.update({
-              closed: true,
-              closedInProgress: false
-            });
-        }, milisecondLeft);
-      } 
+      } else {
+        const job = new CronJob(date, function() {
+          gameDb.update({
+            closed: true,
+            closedInProgress: false
+          });
+        });
+        
+        job.start();
+      }
+      res.status(200).json({
+        message: "Success", 
+      })  
+    },
+    setIntervalCoins: async (req, res) => {
+      // const {miliseconds} = req.body;
+      console.log('Before job instantiation');
+      let date = new Date();
+      date.setSeconds(date.getSeconds()+5);
+      const job = new CronJob(date, function() {
+        const d = new Date();
+        console.log('Specific date:', date, ', onTick at:', d);
+      });
+      console.log('After job instantiation');
+      job.start();
       res.status(200).json({
         message: "Success",
       }) 
-    },
-    setIntervalCoins: async (req, res) => {
-      const {miliseconds} = req.body;
-      setInterval(function () {
-    }, 604800000) 
-    res.status(200).json({
-      message: "Success"
-    })
     }
 }
 
