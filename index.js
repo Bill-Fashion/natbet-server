@@ -19,7 +19,7 @@ routes(app);
 setInterval(function() {
     http.get("http://natbet.herokuapp.com");
     console.log("recall after 5 mins");
-}, 300000); // every 5 minutes (300000)
+}, 900000); // every 5 minutes (300000)
  
 app.listen(PORT, () => {
   console.log(`Server app listening at http://localhost:${PORT}`)
