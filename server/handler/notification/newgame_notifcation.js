@@ -41,7 +41,7 @@ module.exports = {
               // Required for background/quit data-only messages on Android
               priority: "high",
             }
-          );
+          )
         }
         
         res.status(200).json({
