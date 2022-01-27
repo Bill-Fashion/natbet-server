@@ -14,9 +14,8 @@ app.use(cors());
 app.use(express.json());
 routes(app);
 
-
-
 app.listen(PORT, () => {
   console.log(`Server app listening at http://localhost:${PORT}`)
 })
+
 module.exports = app;
