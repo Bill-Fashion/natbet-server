@@ -109,7 +109,9 @@ class _BetsHistoryState extends State<BetsHistory> {
                                         child: HistoryUser(
                                           userData: userData,
                                           gameDocument: gameDocument,
-                                          sideWin: 0,
+                                          sideWin: gameData['winner'] == 'Left'
+                                              ? 0
+                                              : 1,
                                         ),
                                       );
                                     }).toList()),
@@ -158,7 +160,9 @@ class _BetsHistoryState extends State<BetsHistory> {
                                         child: HistoryUser(
                                           userData: userData,
                                           gameDocument: gameDocument,
-                                          sideWin: 1,
+                                          sideWin: gameData['winner'] == 'Left'
+                                              ? 1
+                                              : 0,
                                         ),
                                       );
                                     }).toList()),

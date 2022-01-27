@@ -1,4 +1,4 @@
-const CronJob = require('../../node_modules/cron').CronJob;
+
 module.exports = {
     firebaseResult: async (req, res) => {
         const {roomId, gameId, winner} = req.body;
@@ -136,49 +136,38 @@ module.exports = {
   },
     setTimeoutToClose: async (req, res) => {
       const {roomId, gameId, milisecondSetted} = req.body;
-      
-      let date = new Date(milisecondSetted);
-      console.log("date: ", date);
+      let ts = Date.now();
+      let milisecondLeft = milisecondSetted - ts;
       const gameDb = await admin.firestore()
             .collection('rooms')
             .doc(roomId)
             .collection('games')
             .doc(gameId)
-      let milisecondsLeft = milisecondSetted - Date.now();
-      console.log("milisecondsLeft: ", milisecondsLeft);
-      if (milisecondsLeft <= 0) {
+      if (milisecondLeft <= 0) {
         gameDb.update({
           closed: true,
           closedInProgress: false
         });
       } else {
-        const job = new CronJob(date, function() {
-          gameDb.update({
-            closed: true,
-            closedInProgress: false
-          });
-        });
-        
-        job.start();
+        setTimeout( async () => {
+          
+            gameDb.update({
+              closed: true,
+              closedInProgress: false
+            });
+        }, milisecondLeft);
+        res.status(200).json({
+          message: "Success"
+        })
       }
-      res.status(200).json({
-        message: "Success", 
-      })  
     },
     setIntervalCoins: async (req, res) => {
-      // const {miliseconds} = req.body;
-      console.log('Before job instantiation');
-      let date = new Date();
-      date.setSeconds(date.getSeconds()+5);
-      const job = new CronJob(date, function() {
-        const d = new Date();
-        console.log('Specific date:', date, ', onTick at:', d);
-      });
-      console.log('After job instantiation');
-      job.start();
-      res.status(200).json({
-        message: "Success",
-      }) 
+      const {miliseconds} = req.body;
+      setInterval(function () {
+    }, miliseconds, 'freetuts', (miliseconds / 1000)) 
+    res.status(200).json({
+      message: "Success"
+    })
     }
 }
 
